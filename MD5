@@ -1,4 +1,4 @@
-c5cb04e8b61329f1e4a577160358d089 *DESCRIPTION
+721041c549dc460a1efd0f27c18776d5 *DESCRIPTION
 028514e7ffed8209372a297698f9e309 *NAMESPACE
 4b4c89850d089448cb9421d486a50636 *R/addBarInference.R
 7b16bffc3b9b77b644277772b8a6071f *R/addSmoother.R
@@ -13,10 +13,10 @@ c5cb04e8b61329f1e4a577160358d089 *DESCRIPTION
 3fd4559a9529c36cfed21261ce641ca6 *R/exportHTML.R
 9b2f2e1f584f230799c03eac7633fae4 *R/exportSVG.R
 aaadc9ec506488390f34c01d41cf7a68 *R/general.R
-336a573b2bf52cab78a116e3fd314183 *R/getSummary.R
+46b6f899b9263706c05afb1d8203c28e *R/getSummary.R
 156da99dd058add4f0a1d95237cb99f2 *R/iNZGG.R
-0e66a6e7f668435cfdfabe8b0ac02851 *R/iNZightPlot.R
-ed265d0025ca868b44bdfb5b2f4aa6ec *R/inference.R
+a6e0134b78e891c0641f0de9afcb67d8 *R/iNZightPlot.R
+06ed35b9a7d9f32d713178789bb86789 *R/inference.R
 a005c6d00efcd50dc4cfd7c4ce2def30 *R/inference_epi.R
 99204ac601108676266cb7870370e976 *R/inzDataList.R
 559d3e384bda356000a12846ae76c234 *R/inzDataframe.R
@@ -38,7 +38,7 @@ f38dce1c66be7ac6c5a4762bddf7b4f0 *R/parameters.R
 d05dcacc3b03a151e0b0f5cfe35938e8 *R/reset.R
 325bce9da87cb83f66add4b17fe7b996 *R/stopPlot.R
 210ebf74504851b4dcd11d52bd0dd809 *R/summary.R
-41402eac1ce8a6913a46fac47d550dc0 *R/sysdata.rda
+d63783c47d6230dd790564bb76c630f6 *R/sysdata.rda
 eafea7e7fac4ef4c535d5271abcfdf22 *R/triangularMatrix.R
 14f5b1228484761cb413b106da5e42c3 *inst/assets.zip
 69125bd4aa6ebc20a7b94d46d060bd1d *inst/barplot.js
@@ -61,7 +61,7 @@ d1bb86f9604d3a291767ce52a1147e8f *man/exploreAllSummaries.Rd
 a360dc0885b79b61e69b32144cf9dc87 *man/exportHTML.Rd
 f53ffd2953623bcb47736737a03de9ca *man/exportSVG.Rd
 5fb77e28fb4df5a1ecac5b7cb79f8311 *man/getPlotSummary.Rd
-a016e752c39eaba75e2486bfc8d264df *man/iNZightPlot.Rd
+5c69d47afeb88c5d506651cdb009e9da *man/iNZightPlot.Rd
 fd4fb206164557e491919a8ad68cbcc0 *man/inzpalette.Rd
 873bcde8cdae07f94787643e731f38e9 *man/inzpar.Rd
 58cbbe395bfe0e593b58c5a8d188f0e1 *man/inzplot.Rd
@@ -79,13 +79,13 @@ f090e7b9da2a9cf3adf85550d14c9fdc *tests/testthat/test_bar2.R
 edbda2d2ffa42887cacef54df1a9c970 *tests/testthat/test_codewriting.R
 01179bcf9770462987eabf868d6bbc33 *tests/testthat/test_datetimes.R
 d3e86710801dcd40f2f51cab8eb50fb6 *tests/testthat/test_dot.R
-fed094e2481d7fe83a29c050d15d5d66 *tests/testthat/test_epi.R
+7b873228e83671b39744463f0ac31ad1 *tests/testthat/test_epi.R
 ea1bae6b917fbf5713e2d472f6de1882 *tests/testthat/test_formulas.R
 fa1dd822ce07629b49728e36e1975ba7 *tests/testthat/test_frequencies.R
 5b09995814e6e967a18b2afb038e8f64 *tests/testthat/test_ftplots.R
 55cf3ff2299b04c081c314cf00e89c85 *tests/testthat/test_identify.R
-924a717e0ba2c58bbafba7f3968a9523 *tests/testthat/test_inference.R
-5a03e8833c0680c9e3f88aa3b33d9f4c *tests/testthat/test_interaction.R
+3102f2e66bce0e758dff0fde0c9d4b7f *tests/testthat/test_inference.R
+70427460a6265dc2a1e5f2bcff32f8b8 *tests/testthat/test_interaction.R
 c038b4ca1a467aa9b7554e6a1b5074e0 *tests/testthat/test_palettes.R
 3a675739cd117663ba0454909e147dd7 *tests/testthat/test_pars.R
 c3e2c6664bfd953285d3a2da99ddaf2a *tests/testthat/test_poststrat.R
@@ -93,6 +93,6 @@ c3e2c6664bfd953285d3a2da99ddaf2a *tests/testthat/test_poststrat.R
 71cf93e96c4e9680dd84551b59752996 *tests/testthat/test_scatter.R
 1f287dde0bdcc37d85446dbef3b5aeac *tests/testthat/test_summary.R
 8c3a09add0df7fda5b45db45208b9d59 *tests/testthat/test_survey.R
-9da8400c3ae32e417826faa1b262d371 *tests/testthat/test_survey_inference.R
+46042b6bc9fabf208632d72bc12eef6d *tests/testthat/test_survey_inference.R
 0351eaaa79282bd0cdd1964eaef52beb *tests/testthat/test_survey_methods.R
 acc38150ce943c2bb99ef8edcf85b567 *tests/testthat/test_transform.R
