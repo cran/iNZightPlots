@@ -1,4 +1,4 @@
-7efcdf01a97b78c305be111b8d6703c2 *DESCRIPTION
+12e625f37f68865bdd8609fb9f4d69b8 *DESCRIPTION
 78d3a0e214132b30d3e60d5cc49bc0be *NAMESPACE
 4b4c89850d089448cb9421d486a50636 *R/addBarInference.R
 7b16bffc3b9b77b644277772b8a6071f *R/addSmoother.R
@@ -22,7 +22,7 @@ a005c6d00efcd50dc4cfd7c4ce2def30 *R/inference_epi.R
 3161ed058d87f758317af14eef476b5d *R/inzDataframe.R
 29ba2edc1d1e5d539ecf9f0d8f79375d *R/inzPlotDefaults.R
 aab543d91323e40ea22d4673530506d8 *R/inzbarplot.R
-74463cdab917b5c46b3594f02a06c335 *R/inzdotplot.R
+b389eb79dfa10235525baee67aaf92c4 *R/inzdotplot.R
 7abf33a77d76f49a8145d540fb82523a *R/inzgridplot.R
 cdc6c770f1ace7053cf1f99c6e25332c *R/inzhexplot.R
 3f75e11ada698a71b5c1a7cb781e4681 *R/inzhistplot.R
@@ -39,7 +39,7 @@ b374ff64f917348e450b497f7d4a03cb *R/methods-survey.R
 f38dce1c66be7ac6c5a4762bddf7b4f0 *R/parameters.R
 d05dcacc3b03a151e0b0f5cfe35938e8 *R/reset.R
 325bce9da87cb83f66add4b17fe7b996 *R/stopPlot.R
-210ebf74504851b4dcd11d52bd0dd809 *R/summary.R
+ed9b0b71009b9dd748a5e577765db0bb *R/summary.R
 3f579837686a09fd71f8f9033b164fcd *R/sysdata.rda
 eafea7e7fac4ef4c535d5271abcfdf22 *R/triangularMatrix.R
 14f5b1228484761cb413b106da5e42c3 *inst/assets.zip
@@ -103,7 +103,7 @@ c3e2c6664bfd953285d3a2da99ddaf2a *tests/testthat/test_poststrat.R
 45adeab5ec3588ac5c9334300c972d58 *tests/testthat/test_repweights.R
 71cf93e96c4e9680dd84551b59752996 *tests/testthat/test_scatter.R
 5abcda7e5429d82c70d9a3ec2aabc505 *tests/testthat/test_summary.R
-5ecccd641b80a7aea49d448a35171cbd *tests/testthat/test_survey.R
+93095df89f4988061bbeeacc4ce9c6f3 *tests/testthat/test_survey.R
 41b61b199a03827602fb9a0003280f33 *tests/testthat/test_survey_inference.R
 599b7c9b1f65b974d0238de079243495 *tests/testthat/test_survey_methods.R
 acc38150ce943c2bb99ef8edcf85b567 *tests/testthat/test_transform.R
