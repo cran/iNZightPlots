@@ -5,15 +5,16 @@ dclus1 <- svydesign(id = ~dnum, weights = ~pw, data = apiclus1, fpc = ~fpc)
 
 test_that("One sample t-test", {
     svy_mean <- svymean(~api00, dclus1)
-    svy_ci <- confint(svy_mean)
+    svy_ci <- confint(svy_mean, level = 0.9)
     svy_test <- svyttest(api00~1, dclus1)
 
     inz_test <- capture.output(
-        getPlotSummary(api00,
+        inzinference(~api00,
             design = dclus1,
-            summary.type = "inference",
-            inference.type = "conf"
+            inference.type = "conf",
             # hypothesis.value = 600
+            ci.width = 0.9,
+            width = 80
         )
     )
     inz_inf <-
@@ -34,8 +35,8 @@ test_that("One sample t-test", {
     expect_equal(
         est_tbl,
         data.frame(
-            Lower = round(svy_ci[[1]], 1),
             Estimate = round(svy_mean[[1]], 1),
+            Lower = round(svy_ci[[1]], 1),
             Upper = round(svy_ci[[2]], 1),
             stringsAsFactors = TRUE
         )
@@ -53,21 +54,39 @@ test_that("One sample t-test", {
 })
 
 test_that("Two sample inference", {
-    smry <- inzinference(api00 ~ both, design = dclus1)
+    smry <- inzinference(api00 ~ both, design = dclus1, ci.width = 0.99, width = 80)
     ciline <- smry[grepl("No - Yes", smry)]
     expect_match(ciline, "-15.51", all = FALSE)
+    x <- svyby(~api00, ~both, design = dclus1, svymean)
+    xhat <- round(coef(x), 1)
+    ci <- round(confint(x, level = 0.99), 1)
+    reg <- paste("\\s+", rownames(ci), "\\s+", xhat, "\\s+", ci[, 1], "\\s+", ci[, 2],
+        sep = "", collapse = " ")
+    expect_match(
+        paste(smry, collapse = " "),
+        gsub(".", "\\.", reg, fixed = TRUE),
+        all = FALSE
+    )
+
+    ttest <- svyttest(api00 ~ both, design = dclus1)
+    x <- round(ttest$estimate, 2)
+    ci <- sprintf("%.2f", confint(ttest, level = 0.99) * -1)
+    reg <- gsub(".", "\\.",
+        paste("No - Yes", -x, ci[2], ci[1], sep = "\\s+"),
+        fixed = TRUE)
+    expect_match(smry, reg, all = FALSE)
 })
 
 test_that("Two sample t-test", {
     svy_mean <- svyby(~api00, ~awards, dclus1, svymean)
-    svy_ci <- confint(svy_mean)
+    svy_ci <- confint(svy_mean, level = 0.8)
     svy_test <- svyttest(api00~awards, dclus1)
 
     inz_test <- capture.output(
-        getPlotSummary(api00, awards,
+        inzinference(api00 ~ awards,
             design = dclus1,
-            summary.type = "inference",
-            inference.type = "conf"
+            inference.type = "conf",
+            ci.width = 0.8
         )
     )
     inz_inf <-
@@ -88,8 +107,8 @@ test_that("Two sample t-test", {
     expect_equal(
         est_tbl,
         data.frame(
-            Lower = round(svy_ci[,1], 1),
             Estimate = round(svy_mean[,2], 1),
+            Lower = round(svy_ci[,1], 1),
             Upper = round(svy_ci[,2], 1),
             stringsAsFactors = TRUE
         )
@@ -107,15 +126,15 @@ test_that("Two sample t-test", {
 
 test_that("ANOVA (equivalent)", {
     svy_mean <- svyby(~growth, ~stype, dclus1, svymean)
-    svy_ci <- confint(svy_mean)
+    svy_ci <- confint(svy_mean, level = 0.85)
     svy_test <- svyglm(growth ~ stype, dclus1)
     svy_ftest <- regTermTest(svy_test, ~stype)
 
     inz_test <- capture.output(
-        getPlotSummary(growth, stype,
+        inzinference(growth ~ stype,
             design = dclus1,
-            summary.type = "inference",
-            inference.type = "conf"
+            inference.type = "conf",
+            ci.width = 0.85
         )
     )
     inz_inf <-
@@ -136,8 +155,8 @@ test_that("ANOVA (equivalent)", {
     expect_equal(
         est_tbl,
         data.frame(
-            Lower = round(svy_ci[,1], 2),
             Estimate = round(svy_mean[,2], 2),
+            Lower = round(svy_ci[,1], 2),
             Upper = round(svy_ci[,2], 2),
             stringsAsFactors = TRUE
         )
@@ -155,15 +174,15 @@ test_that("ANOVA (equivalent)", {
 
 test_that("Survey regression", {
     svy_test <- svyglm(api00 ~ api99, dclus1)
-    svy_ci <- confint(svy_test)
+    svy_ci <- confint(svy_test, level = 0.9)
     svy_coef <- summary(svy_test)$coef
 
     inz_test <- capture.output(
-        getPlotSummary(api99, api00,
+        inzinference(api00 ~ api99,
             design = dclus1,
-            summary.type = "inference",
             inference.type = "conf",
-            trend = "linear"
+            trend = "linear",
+            ci.width = 0.9
         )
     )
 
@@ -192,17 +211,17 @@ test_that("Survey regression", {
 
 test_that("Single proportion survey (binary variable)", {
     svy_prop <- svymean(~awards, dclus1)
-    svy_ci <- confint(svy_prop)
+    svy_ci <- confint(svy_prop, level = 0.99)
     svy_Z <- (coef(svy_prop)[[1]] - 0.25) / SE(svy_prop)[[1]]
     svy_p <- 2 * pnorm(abs(svy_Z), lower.tail = FALSE)
 
     inz_test <- capture.output(
-        getPlotSummary(awards,
+        inzinference(~awards,
             design = dclus1,
-            summary.type = "inference",
             inference.type = "conf",
             hypothesis.test = "proportion",
-            hypothesis.value = 0.25
+            hypothesis.value = 0.25,
+            ci.width = 0.9
         )
     )
 
@@ -246,14 +265,14 @@ test_that("Single proportion survey (binary variable)", {
 
 test_that("Two way Chi-square contingency tables", {
     svy_prop <- svyby(~stype, ~awards, dclus1, svymean)
-    svy_ci <- confint(svy_prop)
+    svy_ci <- confint(svy_prop, level = 0.8)
     svy_test <- suppressWarnings(svychisq(~awards+stype, dclus1))
 
     inz_test <- suppressWarnings(capture.output(
-        getPlotSummary(stype, awards,
+        inzinference(stype ~ awards,
             design = dclus1,
-            summary.type = "inference",
-            inference.type = "conf"
+            inference.type = "conf",
+            ci.width = 0.8
         )
     ))
 
@@ -315,10 +334,9 @@ test_that("Subset inference - one sample t-test", {
     )
 
     inz_test <- capture.output(
-        getPlotSummary(api00,
+        inzinference(~api00,
             design = dclus1,
             g1 = stype,
-            summary.type = "inference",
             inference.type = "conf"
         )
     )
@@ -338,8 +356,8 @@ test_that("Subset inference - one sample t-test", {
         function(svy_mean) {
             svy_ci <- confint(svy_mean)
             data.frame(
-                Lower = round(svy_ci[[1]], 1),
                 Estimate = round(svy_mean[[1]], 1),
+                Lower = round(svy_ci[[1]], 1),
                 Upper = round(svy_ci[[2]], 1),
                 stringsAsFactors = TRUE
             )
@@ -383,10 +401,9 @@ test_that("Subset inference - two sample t-test", {
     )
 
     inz_test <- capture.output(
-        getPlotSummary(api00, awards,
+        inzinference(api00 ~ awards,
             design = dclus1,
             g1 = stype,
-            summary.type = "inference",
             inference.type = "conf"
         )
     )
@@ -406,8 +423,8 @@ test_that("Subset inference - two sample t-test", {
         function(svy_mean) {
             svy_ci <- confint(svy_mean)
             data.frame(
-                Lower = round(svy_ci[,1], 1),
                 Estimate = round(svy_mean[,2], 1),
+                Lower = round(svy_ci[,1], 1),
                 Upper = round(svy_ci[,2], 1),
                 stringsAsFactors = TRUE
             )
@@ -462,11 +479,10 @@ test_that("Subset twice inference - one sample t-test", {
     )
 
     inz_test <- capture.output(
-        getPlotSummary(api00,
+        inzinference(~api00,
             design = dclus1,
             g1 = awards,
             g2 = stype, g2.level = "_MULTI",
-            summary.type = "inference",
             inference.type = "conf"
         )
     )
@@ -486,8 +502,8 @@ test_that("Subset twice inference - one sample t-test", {
         function(svy_mean) {
             svy_ci <- confint(svy_mean)
             data.frame(
-                Lower = round(svy_ci[[1]], 1),
                 Estimate = round(svy_mean[[1]], 1),
+                Lower = round(svy_ci[[1]], 1),
                 Upper = round(svy_ci[[2]], 1),
                 stringsAsFactors = TRUE
             )
@@ -533,10 +549,9 @@ test_that("Subset (only g2) inference - two sample t-test", {
 
     assign("dclus1", dclus1, envir = .GlobalEnv)
     inz_test <- capture.output(
-        getPlotSummary(api00, awards,
+        inzinference(api00 ~ awards,
             design = dclus1,
             g2 = stype, g2.level = "_MULTI",
-            summary.type = "inference",
             inference.type = "conf"
         )
     )
@@ -557,8 +572,8 @@ test_that("Subset (only g2) inference - two sample t-test", {
         function(svy_mean) {
             svy_ci <- confint(svy_mean)
             data.frame(
-                Lower = round(svy_ci[,1], 1),
                 Estimate = round(svy_mean[,2], 1),
+                Lower = round(svy_ci[,1], 1),
                 Upper = round(svy_ci[,2], 1),
                 stringsAsFactors = TRUE
             )
@@ -599,18 +614,16 @@ dchis <- suppressWarnings(svrepdesign(
 ))
 
 test_that("Replicate weight designs - one sample t-test", {
-    z <- getPlotSummary(bmi_p,
+    z <- inzinference(~bmi_p,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
     expect_output(print(z), "Design-based One Sample t-test")
 
-    z <- getPlotSummary(bmi_p,
+    z <- inzinference(~bmi_p,
         g1 = race,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
@@ -618,18 +631,16 @@ test_that("Replicate weight designs - one sample t-test", {
 })
 
 test_that("Replicate weight designs - two sample t-test", {
-    z <- getPlotSummary(bmi_p, sex,
+    z <- inzinference(bmi_p ~ sex,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
     expect_output(print(z), "Design-based Two Sample T-test")
 
-    z <- getPlotSummary(bmi_p, sex,
+    z <- inzinference(bmi_p ~ sex,
         g1 = race,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
@@ -637,18 +648,16 @@ test_that("Replicate weight designs - two sample t-test", {
 })
 
 test_that("Replicate weight designs - ANOVA", {
-    z <- getPlotSummary(bmi_p, race,
+    z <- inzinference(bmi_p ~ race,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
     expect_output(print(z), "Wald test for race")
 
-    z <- getPlotSummary(bmi_p, race,
+    z <- inzinference(bmi_p ~ race,
         g1 = sex,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
@@ -656,19 +665,17 @@ test_that("Replicate weight designs - ANOVA", {
 })
 
 test_that("Replicate weight designs - regression", {
-    z <- suppressWarnings(getPlotSummary(bmi_p, ab22,
+    z <- suppressWarnings(inzinference(ab22 ~ bmi_p,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf",
         trend = "linear"
     ))
     expect_is(z, "inzight.plotsummary")
     expect_output(print(z), "Linear Trend Coefficients")
 
-    z <- suppressWarnings(getPlotSummary(bmi_p, ab22,
+    z <- suppressWarnings(inzinference(ab22 ~ bmi_p,
         g1 = race,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf",
         trend = "linear"
     ))
@@ -677,18 +684,16 @@ test_that("Replicate weight designs - regression", {
 })
 
 test_that("Replicate weight designs - single proportion", {
-    z <- getPlotSummary(sex,
+    z <- inzinference(~sex,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
     # expect_output(print(z), "")
 
-    z <- getPlotSummary(sex,
+    z <- inzinference(~sex,
         g1 = race,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
@@ -696,18 +701,16 @@ test_that("Replicate weight designs - single proportion", {
 })
 
 test_that("Replicate weight designs - one way table", {
-    z <- getPlotSummary(race,
+    z <- inzinference(~race,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
     # expect_output(print(z), "")
 
-    z <- getPlotSummary(race,
+    z <- inzinference(~race,
         g1 = sex,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
@@ -715,18 +718,16 @@ test_that("Replicate weight designs - one way table", {
 })
 
 test_that("Replicate weight designs - two way table", {
-    z <- getPlotSummary(race, sex,
+    z <- inzinference(sex ~ race,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
     expect_output(print(z), "Chi-square test for equal distributions")
 
-    z <- getPlotSummary(race, sex,
+    z <- inzinference(sex ~ race,
         g1 = smoke,
         design = dchis,
-        summary.type = "inference",
         inference.type = "conf"
     )
     expect_is(z, "inzight.plotsummary")
@@ -901,7 +902,7 @@ test_that("Missing values are handled appropriately", {
     out <- inzinference(Weight ~ Gender.cat, design = nhanes.svy)
     outi <- grep("Population Means", out) + 3:4
     obs <- scan(textConnection(gsub("[a-zA-Z]", "", out[outi])))
-    exp <- cbind(rci[,1], coef(r), rci[,2])
+    exp <- cbind(coef(r), rci[,1], rci[,2])
     exp <- round(c(exp[1, ], exp[2, ]), 2)
 
     expect_equal(obs, exp)

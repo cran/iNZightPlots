@@ -28,9 +28,14 @@ inzinference.formula <- function(x, data = NULL, design = NULL, type = c("conf",
     type <- match.arg(type)
 
     if (!is.null(fmla$y)) {
-        varx <- data[[fmla$x]]
-        vary <- data[[fmla$y]]
-        if (is_cat(varx) || is_cat(vary)) {
+        if (!is.null(design)) {
+            varx <- design$variables[[fmla$x]]
+            vary <- design$variables[[fmla$y]]
+        } else {
+            varx <- data[[fmla$x]]
+            vary <- data[[fmla$y]]
+        }
+        if (is_cat(varx)) {
             # need to do a switch-a-roo
             xx <- fmla$x
             fmla$x <- fmla$y
