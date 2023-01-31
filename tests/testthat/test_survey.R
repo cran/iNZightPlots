@@ -218,8 +218,11 @@ test_that("Scatter plots work for surveys", {
     sx <- sx[!is.na(sx) & !is.na(nhanes.svy$variables$Weight)]
     expect_equal(px$all$all$x, sx)
 
+    tp <- tempfile(fileext=".pdf")
+    on.exit(unlink(tp))
+    pdf(tp)
     expect_is(
-        inzplot(Weight ~ Height, design = nhanes.svy, plot = FALSE,
+        inzplot(Weight ~ Height, design = nhanes.svy, plot = TRUE,
             smooth = 0.8),
         "inzplotoutput"
     )
@@ -237,4 +240,14 @@ test_that("Log transformation works with surveys", {
             plot = FALSE
         )
     )
+})
+
+test_that("SRS fpc-only works", {
+    srs_data <- data.frame(
+        v = sample(5:20, size = 20, replace = TRUE),
+        y = 100
+    )
+    srs_des <- svydesign(~1, fpc = ~y, data = srs_data)
+
+    expect_silent(inzplot(~v, design = srs_des))
 })

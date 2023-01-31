@@ -1,7 +1,7 @@
 Package: iNZightPlots
 Type: Package
 Title: Graphical Tools for Exploring Data with 'iNZight'
-Version: 2.14.0
+Version: 2.15.1
 Authors@R: c(
     person("Tom", "Elliott", role = c("aut", "cre"), email = "tom.elliott@auckland.ac.nz", comment = c(ORCID = "0000-0002-7815-6318")),
     person("Yu Han", "Soh", role = "aut"),
@@ -13,23 +13,24 @@ BugReports: https://github.com/iNZightVIT/iNZightPlots/issues
 Contact: inzight_support@stat.auckland.ac.nz
 URL: https://inzight.nz
 Depends: R (>= 4.0)
-Imports: boot, chron, colorspace, dichromat, emmeans, grDevices, grid,
-        hexbin, hms, iNZightMR (>= 2.2.5), iNZightTools (>= 1.9),
+Imports: boot, chron, colorspace, dichromat, emmeans, expss, grDevices,
+        grid, hexbin, hms, iNZightMR (>= 2.2.7), iNZightTools (>= 1.9),
         lubridate, magrittr, quantreg, rlang, s20x, scales, stats,
-        survey, utils
-Suggests: covr, dplyr, forcats, ggbeeswarm, ggmosaic, ggplot2,
-        ggridges, ggthemes, gridSVG (>= 1.7-2), hextri, jsonlite,
-        knitr, plotly, RColorBrewer, testthat, tidyr, viridis, waffle
+        stringr, units, survey, utils
+Suggests: covr, forcats, DBI, dplyr, ggbeeswarm, ggmosaic, ggplot2,
+        ggridges, ggtext, ggthemes, gridSVG (>= 1.7-2), hextri,
+        jsonlite, kableExtra, knitr, plotly, RColorBrewer, RSQLite,
+        testthat, tibble, tidyr, viridis, waffle
 License: GPL-3
 Encoding: UTF-8
 Language: en-GB
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 NeedsCompilation: no
-Packaged: 2022-01-24 22:13:18 UTC; tom
+Packaged: 2023-01-31 23:45:23 UTC; tom
 Author: Tom Elliott [aut, cre] (<https://orcid.org/0000-0002-7815-6318>),
   Yu Han Soh [aut],
   Daniel Barnett [aut],
   Simon Anastasiadis [ctb] (Social Wellbeing Agency, NZ)
 Maintainer: Tom Elliott <tom.elliott@auckland.ac.nz>
 Repository: CRAN
-Date/Publication: 2022-01-24 22:52:41 UTC
+Date/Publication: 2023-02-01 00:10:02 UTC
