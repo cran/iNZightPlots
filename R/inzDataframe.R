@@ -1,6 +1,5 @@
 inzDataframe <- function(m, data = NULL, names = list(),
                          g1.level, g2.level, env) {
-
     # This function takes the given arguments and converts them into a
     # data frame for easy use by iNZightPlot.
     # It returns an object with a class: `inz.(simple|freq|survey)`
@@ -82,7 +81,7 @@ inzDataframe <- function(m, data = NULL, names = list(),
         data <- iNZightTools::as_tibble(
             iNZightTools::select(
                 data,
-                as.character(unlist(vn))
+                dplyr::any_of(as.character(unlist(vn)))
             )
         )
     }
@@ -129,6 +128,12 @@ inzDataframe <- function(m, data = NULL, names = list(),
         class(df) <- "inz.simple"
     }
 
+    if ("locate" %in% names(df$data)) {
+        if (!all(is.na(df$data$locate)) && all(df$data$locate == "id")) {
+            df$data$locate <- as.character(seq_len(nrow(df$data)))
+        }
+    }
+
     if (!is.null(m$locate.id)) {
         m$locate.id <- eval(m$locate.id, envir = data, env)
         if (is.logical(m$locate.id)) m$locate.id <- which(m$locate.id)
@@ -137,7 +142,7 @@ inzDataframe <- function(m, data = NULL, names = list(),
             loc.lvls <- unique(df$data$locate.same.level[m$locate.id])
             m$locate.id <- which(df$data$locate.same.level %in% loc.lvls)
         }
-        if (is.null(df$data[["locate"]])) {
+        if (!"locate" %in% names(df$data)) {
             if (is.null(m$locate.col)) {
                 locCol <- "default"
             } else {
@@ -146,14 +151,13 @@ inzDataframe <- function(m, data = NULL, names = list(),
             label[eval(m$locate.id)] <- paste(" ")
         } else {
             locVar <- as.character(df$data$locate)
-            if (all(locVar == "id")) locVar <- as.character(seq_len(nrow(df$data)))
             locVar[is.na(locVar)] <- "missing"
             label[eval(m$locate.id)] <- locVar[m$locate.id]
         }
         df$data$locate <- label
     } else if (!is.null(m$locate.extreme)) {
         label <- character(nrow(df$data))
-        if (!is.null(df$data$locate)) {
+        if ("locate" %in% names(df$data)) {
             locVar <- as.character(df$data$locate)
             locVar[is.na(locVar)] <- "missing"
             label <- locVar
